@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block title %}Edit Profile{% endblock %}
+{% block content %}
+
+<form method="POST" autocomplete="off" enctype="multipart/form-data">
+    <h3 class="my-3" align="center">Edit Profile</h3>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" name="username" value="{{current_user.username}}" disabled>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" value="{{current_user.password}}" disabled>
+    </div>
+    <div class="form-group">
+        <label for="accountcreated">Account Created</label>
+        <input type="text" class="form-control" id="accountcreated" name="accountcreated" value="{{current_user.accountcreated}}" disabled>
+    </div>
+    <div class="form-group">
+        <label for="pfp">Profile Picture</label>
+        <input type="file" class="form-control" id="pfp" name="pfp" accept=".png, .jpg, .jpeg, .webp, .gif" capture="user">
+    </div>
+    <img id="pfpimage" src="" width="128" height="128" hidden>
+    <div class="form-group">
+        <label for="bio">About Me</label>
+        <textarea class="form-control" id="bio" name="bio" maxlength="200">{{current_user.bio}}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script>
+    document.getElementById("pfp").addEventListener("change", function (event) {
+        const input = event.target;
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("pfpimage").src = e.target.result;
+                document.getElementById("pfpimage").hidden = false;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            document.getElementById("pfpimage").src = "";
+            document.getElementById("pfpimage").hidden = true;
+        }
+    });
+</script>
+
+{% endblock %}

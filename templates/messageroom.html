@@ -1,0 +1,130 @@
+{% extends "base.html" %} {% block title %} Messages {% endblock %}
+{% block content %}
+<div class="my-3">
+    <div class="row">
+        <img src="/attachments/{{ otheruser.pfp }}" width="96" height="96" style="border-radius: 50%; overflow: hidden;">
+        <div class="col mx-2">
+        <h1 style="padding: 15px 0; font-size: 48px;">{{ otheruser.username }}</h1>
+        </div>
+    </div>
+    <div class="my-3">
+    <ul class="list-group" id="chat-messages">
+        {% for i in range(messages|length) %}
+        <li class="list-group-item">
+            <div class="row">
+                <img src="/attachments/{{ authors[i].pfp }}" width="50" height="50" style="border-radius: 50%; overflow: hidden; margin-left: 10px;">
+                <div class="ms-2 mx-2 me-auto" style="flex:0 0 90%;max-width:90%;">
+                    <div class="font-weight-bold">{{ authors[i].username }}</div>
+                    <div style="white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;">{{ messages[i].content }}</div>
+                </div>
+                <div class="ml-auto text-secondary" align="right" style="margin-right:10px;">
+                    {{ messages[i].date }}
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    </div>
+</div>
+<div class="row" style="height:50px;"></div>
+{% endblock %}
+{% block contentbottom %}
+<div style="position:fixed;bottom:0px;width:100vw;background-color:#343a40;">
+    <div class="container my-3">
+        <div class="input-group">
+            <textarea style="resize:none;" rows="1" class="form-control" id="sendmsg" name="sendmsg" placeholder="Enter message"></textarea>
+            <input style="width:100px;" class="btn btn-primary" type="submit" id="sendmsgbutton" value="Send">
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    var socket = io.connect("http://" + document.domain + ":" + location.port);
+
+    socket.on("update_chat", function(data) {
+        var chatMessages = document.getElementById("chat-messages");
+        var li = document.createElement("li");
+        li.classList.add("list-group-item");
+        var row = document.createElement("div");
+        row.classList.add("row");
+        var pfp = document.createElement("img");
+        pfp.src = "/attachments/" + data.authorpfp;
+        pfp.width = "50";
+        pfp.height = "50";
+        pfp.style = "border-radius: 50%; overflow: hidden;";
+        var body = document.createElement("div");
+        body.classList.add("ms-2");
+        body.classList.add("mx-2");
+        body.classList.add("me-auto");
+        body.style = "flex:0 0 90%;max-width:90%;";
+        var title = document.createElement("div");
+        title.classList.add("font-weight-bold");
+        title.textContent = data.author;
+        var content = document.createElement("div");
+        content.style = "white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;"
+        content.innerHTML = data.content;
+        var date = document.createElement("div");
+        date.classList.add("ml-auto");
+        date.classList.add("text-secondary");
+        date.align = "right";
+        date.style = "margin-right:10px;";
+        date.textContent = data.date;
+
+        body.appendChild(title);
+        body.appendChild(content);
+        row.appendChild(pfp);
+        row.appendChild(body);
+        row.appendChild(date);
+        li.appendChild(row);
+        chatMessages.appendChild(li);
+        scrollToBottom()
+    });
+    
+    function resizeTextarea() {
+        var textarea = document.getElementById("sendmsg");
+        textarea.style.height = "auto";
+        textarea.style.height = (textarea.scrollHeight + 5) + "px";
+    }
+
+    function scrollToBottom() {
+        document.documentElement.scrollTop = document.documentElement.scrollHeight;
+    }
+
+    document.getElementById("sendmsg").addEventListener("input", resizeTextarea);
+    window.addEventListener("load", scrollToBottom);
+    window.addEventListener("load", resizeTextarea);
+    
+    document.getElementById("sendmsgbutton").addEventListener("click", function(e) {
+        e.preventDefault();
+        var content = document.getElementById("sendmsg").value;
+        if (content.trim() != "") {
+            var currentDate = new Date();
+            var day = currentDate.getDate().toString().padStart(2, "0");
+            var month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+            var year = currentDate.getFullYear();
+            var hours = currentDate.getHours().toString().padStart(2, "0");
+            var minutes = currentDate.getMinutes().toString().padStart(2, "0");
+            var formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+
+            socket.emit("message_sent", {"content": content, "author": "{{current_user.username}}", "date": formattedDate, "dmid": "{{dm.id}}"});
+            document.getElementById("sendmsg").value = "";
+            resizeTextarea()
+        }
+    });
+    
+    var button = document.getElementById("sendmsgbutton");
+    var inputtext = document.getElementById("sendmsg");
+
+    // Add an event listener to the input for the "keypress" event
+    inputtext.addEventListener("keydown", function (event) {
+        // Check if the pressed key is the Enter key (key code 13)
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault();
+            // Trigger the form submission
+            button.click();
+        }
+    });
+    
+</script>
+{% endblock %}

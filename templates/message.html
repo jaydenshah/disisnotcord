@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block title %} Messages {% endblock %}
+{% block content %}
+<div class="my-3">
+    <form method="POST" autocomplete="off">
+        <h2>DMs</h2>
+        <div class="form-group">
+            <label for="createdm">Create a DM</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="createdm" name="createdm" placeholder="Enter username" minlength="3" maxlength="50" required>
+                <input class="btn btn-primary" type="submit" id="createdmbutton" value="Create DM">
+            </div>
+            <div class="form-text">
+            Pay attention to capitals, numbers etc.
+            </div>
+        </div>
+    </form>
+    <ul class="list-group">
+        {% for dm in dms %}
+        <li class="list-group-item" id="{{ dm[1].id }}">
+            <div class="row">
+                <img src="/attachments/{{dm[0].pfp}}" width="50" height="50" style="border-radius: 50%; overflow: hidden;">
+                <div class="ms-2 mx-2 me-auto mr-auto" style="flex:0 0 80%;max-width:80%;">
+                    <div class="font-weight-bold">{{ dm[0].username }}</div>
+                    <div style="margin-left:0px;overflow-wrap:break-word;word-wrap:break-word;">
+                        {{ dm[0].status }}
+                    </div>
+                </div>
+                <div class="ml-auto col" align="right">
+                    <div class="dropdown">
+                        <a href="/" id="dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color: black;">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-dropdown">
+                            <a class="dropdown-item" href="/message/{{dm[1].uuid}}">Message {{dm[0].username}}</a>
+                            <a class="dropdown-item" href="/profile/{{dm[0].username}}">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+
+</div>
+
+<script>
+    {% for dm in dms %}
+<!--    var dm{{ dm[1].id }} = document.getElementById("{{ dm[1].id }}");-->
+
+<!--    dm{{ dm[1].id }}.addEventListener("mouseover", function () {-->
+<!--        dm{{ dm[1].id }}.classList.add("list-group-item-dark");-->
+<!--    });-->
+
+<!--    dm{{ dm[1].id }}.addEventListener("mouseout", function () {-->
+<!--        dm{{ dm[1].id }}.classList.remove("list-group-item-dark");-->
+<!--    });-->
+
+<!--    dm{{ dm[1].id }}.addEventListener("click", function () {-->
+<!--        window.location.href = "/message/{{ dm[1].uuid }}";-->
+<!--    });-->
+    {% endfor %}
+
+</script>
+
+{% endblock %}

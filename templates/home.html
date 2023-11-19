@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block title %} Hello World! {% endblock %}
+{% block content %}
+<div class="my-5" align="center">
+    <img src="attachments/disisnotcord.png" width="512" height="128">
+    <div class="my-3" style="width: 50%;">
+        <h3>DisIsNotCord: The only alternative to discord you'll ever need</h3>
+    </div>
+    <div class="my-3">
+        <button class="btn btn-secondary mx-1" onclick="location.href='/login'" style="font-size: 150%;">Login</button>
+        <button class="btn btn-primary btn mx-1" onclick="location.href='/signup'" style="font-size: 150%;">Sign Up</button>
+    </div>
+</div>
+{% endblock %}
