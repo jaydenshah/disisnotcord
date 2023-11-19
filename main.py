@@ -96,7 +96,7 @@ def signup():
             flash("Passwords do not match!", category="error")
         else:
             today = date.today().strftime("%d %b %Y")
-            newuser = User(username=username, password=password1, accountcreated=today, pfp="404", bio="")
+            newuser = User(username=username, password=password1, accountcreated=today, pfp="404", bio="", status="")
             db.session.add(newuser)
             db.session.commit()
             login_user(newuser, remember=True)
