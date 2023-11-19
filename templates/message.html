@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="ml-auto col" align="right">
-                    <div class="dropdown">
+                    <div id="dropdown{{ dm[1].id }}" class="dropdown">
                         <a href="/" id="dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none; color: black;">
                             <i class="bi bi-three-dots-vertical"></i>
                         </a>
@@ -45,20 +45,32 @@
 </div>
 
 <script>
+    var ondropdown = false;
     {% for dm in dms %}
-<!--    var dm{{ dm[1].id }} = document.getElementById("{{ dm[1].id }}");-->
+    var dm{{ dm[1].id }} = document.getElementById("{{ dm[1].id }}");
+    var dropdown{{ dm[1].id }} = document.getElementById("dropdown{{ dm[1].id }}")
 
-<!--    dm{{ dm[1].id }}.addEventListener("mouseover", function () {-->
-<!--        dm{{ dm[1].id }}.classList.add("list-group-item-dark");-->
-<!--    });-->
+    dm{{ dm[1].id }}.addEventListener("mouseover", function () {
+        dm{{ dm[1].id }}.classList.add("list-group-item-dark");
+    });
 
-<!--    dm{{ dm[1].id }}.addEventListener("mouseout", function () {-->
-<!--        dm{{ dm[1].id }}.classList.remove("list-group-item-dark");-->
-<!--    });-->
+    dm{{ dm[1].id }}.addEventListener("mouseout", function () {
+        dm{{ dm[1].id }}.classList.remove("list-group-item-dark");
+    });
 
-<!--    dm{{ dm[1].id }}.addEventListener("click", function () {-->
-<!--        window.location.href = "/message/{{ dm[1].uuid }}";-->
-<!--    });-->
+    dropdown{{ dm[1].id }}.addEventListener("mouseover", function () {
+        ondropdown = true;
+    });
+
+    dropdown{{ dm[1].id }}.addEventListener("mouseout", function () {
+        ondropdown = false;
+    });
+
+    dm{{ dm[1].id }}.addEventListener("click", function (e) {
+        if (ondropdown == false) {
+            window.location.href = "/message/{{ dm[1].uuid }}";
+        }
+    });
     {% endfor %}
 
 </script>
